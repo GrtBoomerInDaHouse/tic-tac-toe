@@ -1,111 +1,201 @@
-const gameBoard = ( () => {
+const gameBoard = (() => {
+  let board = [];
 
-let bord = [];
+  for (i = 1; i <= 9; i++) {
+    board.push(i);
+  }
 
-for (i=1; i<=9; i++){
+  return { board };
+})();
 
-    bord.push(i);
-}
+const playGround = (pl1, pl2) => {
+  const hit = (cube) => {
+    let x = "X";
+    o = "O";
+    countX = gameBoard.board.filter((el) => el === "X");
+    countO = gameBoard.board.filter((el) => el === "O");
 
-return {bord};
-
-})()
-
-
-const Player = (name, tool) => {
-    const hit = cube =>{
-
-        gameBoard.bord.splice(cube, 1, tool)
-
-
+    if (countX.length <= countO.length) {
+      gameBoard.board.splice(cube, 1, x);
+      turn.textContent = `${pl2} turn!`;
+    } else {
+      gameBoard.board.splice(cube, 1, o);
+      turn.textContent = `${pl1} turn!`;
     }
-    return {name, tool, hit};
+  };
 
-}
+  return {
+    pl1,
+    pl2,
+    hit,
+  };
+};
+
+const main = document.querySelector(".main");
+const inputPl1 = document.querySelector("#player-1");
+const inputPl2 = document.querySelector("#player-2");
+const turn = document.querySelector(".turn");
+const winner = document.querySelector(".winner");
+const cells = document.querySelectorAll(".cube");
 
 
-const ricardo = Player('ricardo', "X");
-const nikolas = Player('Nikolas Keige', "O");
+let players = playGround("Player One", "Player Two");
 
+document.addEventListener("click", (e) => {
+  if (e.target.matches(".cube")) {
+    if (e.target.textContent === "") {
+      players.hit(e.target.id - 1);
+      e.target.textContent = gameBoard.board[e.target.id - 1];
 
+      let winner = game.checkWinner(gameBoard.board);
 
-document.addEventListener('click', e=>{
-
-    if(e.target.matches('.cube')){
-        
-       if (e.target.textContent === ""){
-
-        setTurn(ricardo, nikolas).hit(e.target.id-1)
-        e.target.textContent = gameBoard.bord[e.target.id-1]
-      
-       let win = checkWinner(gameBoard.bord)
-
-       win === "X" || win === "O" ? alert("THATS MY BOY " + win): console.log('NOT YET')}else{
-           return
-       }
-       
+      game.showWinner(winner);
+      game.crossLine(winner);
+    } else {
+      return;
     }
-    
-   
+  }
+});
+
+document.addEventListener("click", (e) => {
+  const popUp = document.querySelector(".players-div");
+
+  if (e.target.matches(".start")) {
+    popUp.setAttribute("style", "display:flex");
+    inputPl1.value = "";
+    inputPl2.value = "";
+  } else if (e.target.matches(".out-btn")) {
+    popUp.removeAttribute("style", "display:flex");
+  } else if (e.target.matches(".ok-btn")) {
+    player1 = inputPl1.value;
+    player2 = inputPl2.value;
+    players = playGround(player1, player2);
+    popUp.removeAttribute("style", "display:flex");
+    turn.textContent = `${player1} vs ${player2}`;
+  }
+});
+
+document.addEventListener("keypress", (e) => {
+  if (e.target.matches("#player-1")) {
+    if (inputPl1.value.length > 10) {
+      e.preventDefault();
+    } else {
+      inputPl1.textContent += e.key;
+    }
+  } else if (e.target.matches("#player-2")) {
+    if (inputPl2.value.length > 10) {
+      e.preventDefault();
+    } else {
+      inputPl2.textContent += e.key;
+    }
+  }
+});
+
+//  RESTART GAME
+
+document.addEventListener("click", (e) => {
+  if (e.target.matches(".winner")) {
+    game.clear();
+    winner.removeAttribute("style", "display:flex");
+    main.removeAttribute("style", "filter: blur(1px)");
+  } else if (e.target.matches(".restart")) {
+    game.clear();
+  }
 });
 
 
 
-function setTurn (pl1,pl2) {
 
-   let a= gameBoard.bord.filter((el)=>{
-       return el === 'X';  
-   });
-   
-    let b = gameBoard.bord.filter((el)=>{
-        return el === 'O'
-    })
 
-    if(a.length > b.length){
-        return pl2;
-    }else{
-        return pl1;
+
+
+const game = (() => {
+  const clear = () => {
+    gameBoard.board = [];
+    for (i = 1; i <= 9; i++) {
+      gameBoard.board.push(i);
     }
 
-   
-}
+    cells.forEach((el) => {
+      el.textContent = "";
+    });
 
+    turn.textContent = `${players.pl1} vs ${players.pl2}`;
 
-function checkWinner(gbord){
-let a = [...gbord]
-let bord = ['','',''].map(()=>{return a.splice(0,3)});
-let winner = '';
+    inputPl1.value = "";
+    inputPl2.value = "";
+  };
 
-for(i=0;i<bord.length;i++){
+  const checkWinner = (arr) => {
+    // split array on 3x3 array
 
-    if(bord[i][0] === bord[i][1] && bord[i][0] === bord[i][2]){
+    let winner = "";
+    let arrClone = [...arr];
+    let winBoard = ["", "", ""].map(() => {
+      return arrClone.splice(0, 3);
+    });
 
+    // Check winner position horizontal, vertical etc id = first cell id, player = 'X"(pl1) or "O" (pl2);
 
-        winner = bord[i][0]
-       
+    for (i = 0; i < winBoard.length; i++) {
+      if (
+        winBoard[i][0] === winBoard[i][1] &&
+        winBoard[i][0] === winBoard[i][2]
+      ) {
+        winner = {
+          pos: "x",
+          id: i === 1 || i === 2 ? i * 3 : i,
+          player: winBoard[i][0],
+        };
+      } else if (
+        winBoard[0][i] === winBoard[1][i] &&
+        winBoard[0][i] === winBoard[2][i]
+      ) {
+        winner = { pos: "y", id: i, player: winBoard[0][i] };
+      } else if (
+        winBoard[0][0] === winBoard[1][1] &&
+        winBoard[0][0] === winBoard[2][2]
+      ) {
+        winner = { pos: "z", id: 0, player: winBoard[0][0] };
+      } else if (
+        winBoard[0][2] === winBoard[1][1] &&
+        winBoard[0][2] === winBoard[2][0]
+      ) {
+        winner = { pos: "z", id: 2, player: winBoard[0][2] };
+      }
+    }
 
-    }else if(bord[0][i] === bord[1][i] && bord[0][i] === bord[2][i]){
+    return winner;
+  };
 
+  const crossLine = (obj) => {
+    let line = document.createElement("div");
+    if (obj.pos === "x") {
+      line.classList.add("x-cross");
+    } else if (obj.pos === "y") {
+      line.classList.add("y-cross");
+    } else if (obj.pos === "z") {
+      obj.id === 2
+        ? line.classList.add("z-cross-left")
+        : line.classList.add("z-cross-right");
+    }
 
-        winner = bord[0][i]
-       
-    }else if(bord[0][0] === bord[1][1] && bord[0][0] === bord[2][2] ){
+    obj.id !== undefined && cells[obj.id].appendChild(line);
+  };
 
-        winner = bord[0][0]  
-       
-    } else if(
-        bord[0][2] === bord[1][1] && bord[0][2] === bord[2][0]){
-            winner = bord[0][2]
-        }
-    
-}
+  const showWinner = (obj) => {
+    let sign = obj[Object.keys(obj)[2]];
 
+    if (sign !== undefined) {
+      let player = sign === "X" ? players.pl1 : players.pl2;
+      setTimeout(() => {
+        winner.setAttribute("style", "display: flex");
+        winner.innerHTML = `<h2>${player} WINS!</h2>`;
+        main.setAttribute("style", "filter: blur(1px)");
+      }, 500);
+      turn.textContent = "";
+    }
+  };
 
-return winner;
-
-}
-
-
-
-
-
+  return { clear, checkWinner, showWinner, crossLine };
+})();

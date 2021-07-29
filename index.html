@@ -1,40 +1,76 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="css/styles.css">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="css/styles.css" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Kanit&family=Maven+Pro&family=Otomanopee+One&display=swap"
+      rel="stylesheet"
+    />
     <title>Tic Tac Toe</title>
     <script src="main.js" defer></script>
-</head>
+  </head>
 
-<body>
+  <body>
+    <div class="players-div">
+      <div class="form">
+        <div class="form-header">
+          <h2>Choose your way</h2>
+        </div>
+
+        <div class="input-player-1">
+          <label class="label-1" for="player-1">Player One:</label>
+          <input id="player-1" type="text" />
+          <p>Tool: <span class="x">X</span></p>
+        </div>
+
+        <div class="input-player-2">
+          <label class="label-2" for="player-2">Player Two:</label>
+          <input id="player-2" type="text" />
+          <p>Tool: <span class="o"> O </span></p>
+        </div>
+
+        <div class="form-buttons">
+          <button class="out-btn">Out</button>
+          <button class="ok-btn">Confirm</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="winner"></div>
 
     <div class="container">
+      <div class="header">
+        <h1>Tic Tac Toe</h1>
+      </div>
 
+      <div class="main">
+        <div class="turn">Player One vs Player Two</div>
 
         <div class="bord">
+          <div class="cube" id="1"></div>
+          <div class="cube" id="2"></div>
+          <div class="cube" id="3"></div>
+          <div class="cube" id="4"></div>
 
-            <div class="cube" id='1'></div>
-            <div class="cube" id='2'></div>
-            <div class="cube" id='3'></div>
-            <div class="cube"  id='4'></div>
-           
-            <div class="cube"  id='5'></div>
-            <div class="cube"  id='6'></div>
-            <div class="cube"  id='7'></div>
-            <div class="cube"  id='8'></div>
-            <div class="cube"  id='9'></div>
-
+          <div class="cube" id="5"></div>
+          <div class="cube" id="6"></div>
+          <div class="cube" id="7"></div>
+          <div class="cube" id="8"></div>
+          <div class="cube" id="9"></div>
         </div>
-       
-        
 
+        <div class="buttons-div">
+          <button class="start">Start</button>
+          <button class="restart">Restart</button>
+        </div>
+      </div>
 
+      <div class="footer">
+        <p>&copy; 2021 MicrowaveDev</p>
+      </div>
     </div>
-    
-</body>
-
-
+  </body>
 </html>
